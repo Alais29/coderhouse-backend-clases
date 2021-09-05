@@ -1,0 +1,45 @@
+======================================
+Crear base de datos sin autenticación:
+======================================
+
+1. Obtener la imagen de mongo y correr el contenedor
+- docker pull mongo
+- docker run --name CONTAINERNAME -d -p 27017:27017 mongo mongod
+
+2. Ejecutar la línea de comandos del container en docker hub o correr:
+- docker exec -i -t CONTAINERNAME bash
+
+3. Ejecutar mongo:
+- mongo
+
+======================================
+Crear base de datos con autenticación:
+======================================
+
+1. Obtener la imagen de mongo y correr el contenedor (igual que el proceso anterior pero con la flag --auth)
+- docker pull mongo
+- docker run --name CONTAINERNAME -d -p 27017:27017 mongo mongod --auth
+
+2. Ejecutar la línea de comandos del container en docker hub o correr:
+- docker exec -i -t CONTAINERNAME bash
+
+3. Ejecutar mongo:
+- mongo
+
+4. Crear un usuario con sus permisos para la base de datos correspondiente
+- use admin
+- db.createUser({
+  user: "pepe",
+  pwd: 'asd456',
+  roles: [
+    { role: "read", db: "ecommerce" }
+  ]
+})
+
+5. Cerrar la sesión de mongo y entrar de nuevo con el siguiente comando:
+- mongo -u USUARIOCREADO -p PASSWORD
+o 
+- mongo -u USUARIOCREADO
+y la línea de comandos pedira la contraseña
+
+6. Se habrá conectado a mongo con el usuario indicado y con los permisos creados, si se creo un usuario solo con permiso de leer, si intenta insertar, modificar o borrar un documento, saldrá un error

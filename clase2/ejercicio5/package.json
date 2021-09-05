@@ -1,0 +1,15 @@
+{
+  "name": "ejercicio5",
+  "version": "1.0.0",
+  "description": "clase 2 ejercicio 5, coderhouse",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}

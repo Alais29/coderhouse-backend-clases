@@ -1,0 +1,87 @@
+// use empresa
+
+db.clientes.insert({ "nombre": "Cosmes", "edad": 33 })
+
+db.clientes.insert([
+  { "nombre": "pepe", "edad": 25 },
+  { "nombre": "fulanito", "edad": 38 },
+  { "nombre": "hernan", "edad": 33 },
+])
+
+db.articulos.insert([
+  { "nombre": "remera", "precio": 2500, "stock": 3 },
+  { "nombre": "camisa", "precio": 1800, "stock": 1 },
+  { "nombre": "pantalón", "precio": 1500, "stock": 2 },
+])
+
+// show collections
+
+db.articulos.find()
+db.clientes.find()
+
+//para contar la cantidad de documentos en una collection
+db.articulos.countDocuments({})
+
+//para contar la cantidad de documentos según una query
+//cuenta la cantidad de documentos con edad = 25
+db.clientes.countDocuments({ "edad": 25 })
+
+//contar los documentos cuya edad no es 25
+db.articulos.countDocuments({ "precio": { $ne: 2500 } })
+
+db.clientes.insert([
+  { "nombre": "Pablo", "edad": 25 },
+  { "nombre": "Juan", "edad": 22 },
+  { "nombre": "Lucia", "edad": 25 },
+  { "nombre": "Juan", "edad": 29 },
+  { "nombre": "Fede", "edad": 35 }
+])
+
+// ordenar los clientes de manera descendente segun la edad
+db.clientes.find({}).sort({ "edad": -1 })
+
+// ordenar los clientes de manera ascendete segun la edad y limitar a un solo resultado
+db.clientes.find().sort({ "edad": 1 }).limit(1)
+
+// ordenar los clientes de manera ascendete segun la edad, saltar 1 resultado y limitar a un solo resultado (osea que en este caso mostraría el segundo más joven)
+db.clientes.find().sort({ "edad": 1 }).skip(1).limit(1)
+
+// listar los clientes llamados juan
+db.clientes.find({ "nombre": /juan/i })
+
+// listar los clientes llamados juan y con 29 años
+db.clientes.find({ "nombre": /juan/i, "edad": 29 })
+
+// listar los clientes llamados juan o lucia
+db.clientes.find({
+  $or: [
+    { "nombre": /juan/i },
+    { "nombre": /lucia/i }
+  ]
+})
+
+// listar los clientes que tengan más de 25 años
+db.clientes.find({ "edad": { $gt: 25 } })
+
+// listar clientes con edad menor o igual que 25
+db.clientes.find({ "edad": { $lte: 25 } })
+
+// listar clientes que no tienen 25 años y ordenarlos descendente
+db.clientes.find({ edad: { $ne: 25 } }).sort({ "edad": -1 })
+
+// listar clientes entre 26 y 35 años
+db.clientes.find({
+  $and: [
+    { edad: { $gte: 26 } },
+    { edad: { $lte: 35 } }
+  ]
+})
+
+//Actualizar la edad de ‘Fede’ a 36 años, listando y verificando que no aparezca en el último listado 
+db.clientes.update({ "nombre": "Fede" }, { $set: { edad: 38 } })
+
+//actualizar todos los clientes con edad 25 a edad 26
+db.clientes.updateMany({ "edad": 25 }, { $set: { "edad": 26 } })
+
+//borrar todos los clientes que se llamen Juan
+db.clientes.remove({ "nombre": /juan/i })

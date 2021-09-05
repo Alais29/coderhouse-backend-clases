@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Static Template</title>
+</head>
+
+<body>
+  <form>
+    Min <input type="number" class="minNumber" required>
+    Max <input type="number" class="maxNumber" required>
+    <button>start</button>
+  </form>
+
+  <div class="error"></div>
+
+  <div class="container">
+    <button class="next">Next</button>
+    <button class="complete">Complete the run</button>
+    <button class="reset">Reset</button>
+    <table class="result">
+      <tr>
+        <th>number</th>
+        <th>previous value</th>
+        <th>current value</th>
+        <th>next value</th>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    const container = document.querySelector(".container");
+    const errorContainer = document.querySelector(".error");
+    const nextBtn = document.querySelector(".next");
+    const completeBtn = document.querySelector(".complete");
+    const resetBtn = document.querySelector(".reset");
+    const result = document.querySelector(".result");
+    const form = document.querySelector("form");
+    const minNumber = document.querySelector('.minNumber')
+    const maxNumber = document.querySelector('.maxNumber')
+
+    const values = []
+    let minNumberValue = localStorage.getItem('minNumber') || 1;
+    let maxNumberValue = localStorage.getItem('maxNumber') || 100;
+    let counter = localStorage.getItem('counter') || 0;
+
+    function getRemainder(num, divisor) {
+      let t = num - divisor * parseInt(num / divisor);
+      return t;
+    }
+
+    function recursiveFizzBuzz(minValue, maxValue) {
+      if (minValue <= maxValue) {
+        if (minValue === 0) {
+          values.push("0 not FizzBuzz");
+        } else if (getRemainder(minValue, 3) === 0 && getRemainder(minValue, 5) === 0) {
+          values.push("FizzBuzz");
+        } else if (getRemainder(minValue, 3) === 0) {
+          values.push("Fizz");
+        } else if (getRemainder(minValue, 5) === 0) {
+          values.push("Buzz");
+        } else {
+          values.push(minValue);
+        }
+        recursiveFizzBuzz(minValue + 1, maxValue)
+      }
+    }
+
+    function reset() {
+      nextBtn.disabled = false
+      counter = 0
+      result.innerHTML = `
+        <tr>
+          <th>number</th>
+          <th>previous value</th>
+          <th>current value</th>
+          <th>next value</th>
+        </tr>
+      `
+      minNumber.value = 1
+      maxNumber.value = 100
+      localStorage.removeItem('counter')
+      localStorage.removeItem('minNumber')
+      localStorage.removeItem('maxNumber')
+    }
+
+    // recursiveFizzBuzz(1)
+    //TODO add minvaluenumber and maxvaluenumber to localstorage, if there are values there, then show the container as default
+    window.onload = () => {
+      minNumber.value = minNumberValue
+      maxNumber.value = maxNumberValue
+      recursiveFizzBuzz(Number(minNumberValue), Number(maxNumberValue))
+      if (counter >= maxNumberValue) {
+        nextBtn.disabled = true;
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      result.innerHTML = `
+        <tr>
+          <th>number</th>
+          <th>previous value</th>
+          <th>current value</th>
+          <th>next value</th>
+        </tr>
+      `
+      if (minNumberValue >= maxNumberValue) {
+        errorContainer.innerHTML = 'error, the start number must be smaller than the end number'
+      } else {
+        recursiveFizzBuzz(Number(minNumberValue), Number(maxNumberValue))
+        counter = minNumberValue
+        errorContainer.innerHTML = ''
+        localStorage.setItem('minNumber', minNumberValue)
+        localStorage.setItem('maxNumber', maxNumberValue)
+      }
+    })
+
+    minNumber.addEventListener('input', (e) => {
+      minNumberValue = e.target.value
+    })
+
+    maxNumber.addEventListener('input', (e) => {
+      maxNumberValue = e.target.value
+    })
+
+    nextBtn.addEventListener("click", () => {
+      if (counter - 1 === Number(maxNumberValue)) {
+        nextBtn.disabled = true;
+      } else {
+        const row = `
+        <tr>
+          <td>${counter}</td>
+          <td>${values[counter - 1] ?? null}</td>
+          <td>${values[counter]}</td>
+          <td>${values[counter + 1] ?? "done!"}</td>
+          </tr>
+        `
+        counter++
+        result.innerHTML += row
+        localStorage.setItem('counter', counter)
+      }
+    });
+
+    completeBtn.addEventListener("click", () => {
+      nextBtn.disabled = true;
+      function completeRecursive(value) {
+        if (value < values.length) {
+          counter++
+          const row = `
+            <tr>
+              <td>${counter}</td>
+              <td>${values[counter - 2] ?? null}</td>
+              <td>${values[counter - 1]}</td>
+              <td>${values[counter] ?? "done!"}</td>
+            </tr>
+          `
+          result.innerHTML += row
+          completeRecursive(value + 1)
+        }
+      }
+      completeRecursive(counter)
+      localStorage.setItem('counter', counter)
+    })
+
+    resetBtn.addEventListener("click", () => {
+      nextBtn.disabled = false
+      counter = 0
+      result.innerHTML = `
+      <tr>
+        <th>number</th>
+        <th>previous value</th>
+        <th>current value</th>
+        <th>next value</th>
+      </tr>
+    `
+      minNumber.value = 1
+      maxNumber.value = 100
+      localStorage.removeItem('counter')
+      localStorage.removeItem('minNumber')
+      localStorage.removeItem('maxNumber')
+    })
+  </script>
+</body>
+
+</html>
