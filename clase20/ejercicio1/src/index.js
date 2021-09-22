@@ -30,8 +30,8 @@ const CRUD = async () => {
 
     console.log('READ')
     //Los estudiantes ordenados por orden alfabético según sus nombres.
-    const estudiantesOrdenAlfabetico = await model.estudiantes.find({}).sort({ nombre: 1 })
-    // console.log(estudiantesOrdenAlfabetico)
+    const estudiantesOrdenAlfabetico = await model.estudiantes.find({})
+    console.log(estudiantesOrdenAlfabetico)
 
     //El estudiante más joven.
     const estudianteMasJoven = await model.estudiantes.find({}).sort({ edad: 1 }).limit(1)
@@ -99,6 +99,7 @@ const CRUD = async () => {
     // const estudiantesIngreso = await model.estudiantes.find({ ingreso: true }, { _id: 0, __v: 0 })
     // console.log(estudiantesIngreso)
 
+    console.log('DELETE')
     // Borrar de la colección de estudiantes los documentos cuyo campo 'ingreso' esté en true
     // const estudiantesDeleted = await model.estudiantes.deleteMany({ ingreso: true })
     // console.log(estudiantesDeleted)
