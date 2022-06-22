@@ -1,0 +1,6 @@
+{
+  "explorer.compactFolders": false,
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.suggest.names": true
+}
